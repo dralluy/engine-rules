@@ -10,7 +10,7 @@ import java.util.function.Function;
  * @author david.ralluy
  *
  */
-public class PrecioRebajadoRule extends BusinessRule<ProductCatalog> {
+public class DiscountedPriceRule extends BusinessRule<ItemCollection> {
 
     private static final int PRICE_99 = 99;
     private static final int PRICE_100 = 100;
@@ -18,7 +18,7 @@ public class PrecioRebajadoRule extends BusinessRule<ProductCatalog> {
     /**
      * Rule name.
      */
-    public PrecioRebajadoRule() {
+    public DiscountedPriceRule() {
         super("precioRebajadoRule");
     }
 
@@ -26,10 +26,10 @@ public class PrecioRebajadoRule extends BusinessRule<ProductCatalog> {
      * Regla que fija el precio a 99 para precios mayores que 100.
      */
     @Override
-    public StreamRule<ProductCatalog> defineRule() {
+    public StreamRule<ItemCollection> defineRule() {
         return s -> s.peek(p -> {
             if (p.getPrecio() > ((Integer) this.getParameters().get("precio")).intValue()) {
-                p.setPrecio(PrecioRebajadoRule.PRICE_99);
+                p.setPrecio(DiscountedPriceRule.PRICE_99);
             }
         });
     }
@@ -37,17 +37,17 @@ public class PrecioRebajadoRule extends BusinessRule<ProductCatalog> {
     @Override
     public Map<String, Object> defineParameters() {
         Map<String, Object> params = new HashMap<>();
-        params.put("precio", new Integer(PrecioRebajadoRule.PRICE_100));
+        params.put("precio", new Integer(DiscountedPriceRule.PRICE_100));
         return params;
     }
 
     @Override
-    public Function<ProductCatalog, ProductCatalog> defineTransformation() {
+    public Function<ItemCollection, ItemCollection> defineTransformation() {
         return null;
     }
 
     @Override
-    protected ProductCatalog internalProcess(final ProductCatalog context) {
+    protected ItemCollection internalProcess(final ItemCollection context) {
         return null;
     }
 }

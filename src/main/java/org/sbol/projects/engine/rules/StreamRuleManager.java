@@ -1,5 +1,6 @@
 package org.sbol.projects.engine.rules;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 import org.sbol.projects.engine.constants.Channel;
+import org.sbol.projects.engine.exceptions.EngineRuleException;
 import org.sbol.projects.engine.rules.annotations.Rule;
 import org.sbol.projects.engine.utils.S3ClassLoader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +31,12 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
 
     private Map<Class<?>, Map<String, BusinessRule<P>>> rulesMap = new HashMap<>();
 
-    private Map<Class<?>, Map<Channel, StreamRule<P>>> rulesCompositeMap = new HashMap<>();
+    private Map<Class<?>, EnumMap<Channel, StreamRule<P>>> rulesCompositeMap = new HashMap<>();
 
-    private Map<Class<?>, Map<Channel, List<BusinessRule<P>>>> rulesAppliedMap = new HashMap<>();
+    private Map<Class<?>, EnumMap<Channel, List<BusinessRule<P>>>> rulesAppliedMap = new HashMap<>();
 
     @Autowired
     private ApplicationContext context;
-
-    protected ApplicationContext getContext() {
-        return this.context;
-    }
 
     @Autowired
     private CriterionRuleFactory<P> criterionRuleFactory;
@@ -85,7 +83,7 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
     }
 
     @Override
-    public List<P> executeRules(final List<P> productos, final Channel channel) {
+    public List<P> executeRules(final List<P> productos, final Channel channel) throws InterruptedException {
 
         if (!this.rulesCompositeMap.containsKey(this.getTargetClass())) {
             this.loadRules(null);
@@ -95,7 +93,7 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
             try {
                 this.startSignal.await();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw e;
             }
         }
 
@@ -125,8 +123,8 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
         Map<String, BusinessRule<P>> result = new HashMap<>();
 
         Map<String, Object> mapTemp = this.getContext().getBeansWithAnnotation(Rule.class);
-        for (String key : mapTemp.keySet()) {
-            Object currentEntry = mapTemp.get(key);
+        for (Map.Entry<String, Object> entry : mapTemp.entrySet()) {
+            Object currentEntry = entry.getValue();
             Rule ruleAnnotation = currentEntry.getClass().getAnnotation(Rule.class);
             if (ruleAnnotation.type() == this.getTargetClass()) {
                 result.put(((BusinessRule<P>) currentEntry).getName(), (BusinessRule<P>) currentEntry);
@@ -156,8 +154,8 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
                     // aqui obtenemos una lista inicial de BusinessRule que encapsula
                     // su respectiva StreamRule (que es la que aplica las reglas de negocio en si sobre los productos).
                     this.getRulesFromSpringContext());
-            this.rulesCompositeMap.put(this.getTargetClass(), new HashMap<Channel, StreamRule<P>>());
-            this.rulesAppliedMap.put(this.getTargetClass(), new HashMap<Channel, List<BusinessRule<P>>>());
+            this.rulesCompositeMap.put(this.getTargetClass(), new EnumMap<Channel, StreamRule<P>>(Channel.class));
+            this.rulesAppliedMap.put(this.getTargetClass(), new EnumMap<Channel, List<BusinessRule<P>>>(Channel.class));
         }
 
         // Agrupamos las reglas por canal
@@ -201,7 +199,7 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
     }
 
     @Override
-    public void addRule(final String ruleCollection, final String ruleName) {
+    public void addRule(final String ruleCollection, final String ruleName) throws EngineRuleException {
 
         @SuppressWarnings("unchecked")
         BusinessRule<P> rule = (BusinessRule<P>) this.loadRuleFromS3(ruleName);
@@ -248,7 +246,7 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
         }
     }
 
-    private Object loadRuleFromS3(final String ruleName) {
+    private Object loadRuleFromS3(final String ruleName) throws EngineRuleException {
 
         ClassLoader classLoaderCurrent = Thread.currentThread().getContextClassLoader();
         ClassLoader classLoader = new S3ClassLoader(StreamRuleManager.TEST_BUCKET_NAME,
@@ -260,11 +258,13 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
             ruleClass = classLoader.loadClass(ruleName);
             return ruleClass.newInstance();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            // Assert.fail(e.getMessage());
+            throw new EngineRuleException(e);
         }
 
-        return null;
+    }
 
+    protected ApplicationContext getContext() {
+        return this.context;
     }
 
 }

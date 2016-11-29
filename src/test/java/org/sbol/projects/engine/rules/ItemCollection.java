@@ -6,7 +6,7 @@ package org.sbol.projects.engine.rules;
  * @author david.ralluy
  *
  */
-public class ProductCatalog {
+public class ItemCollection {
 
     private String code;
 

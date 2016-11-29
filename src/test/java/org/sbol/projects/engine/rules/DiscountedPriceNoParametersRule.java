@@ -9,14 +9,14 @@ import java.util.function.Function;
  * @author david.ralluy
  *
  */
-public class PrecioRebajadoNoParametersRule extends BusinessRule<ProductCatalog> {
+public class DiscountedPriceNoParametersRule extends BusinessRule<ItemCollection> {
 
     private static final int PRICE_99 = 99;
 
     /**
      * Rule name.
      */
-    public PrecioRebajadoNoParametersRule() {
+    public DiscountedPriceNoParametersRule() {
         super("precioRebajadoRule");
     }
 
@@ -24,10 +24,10 @@ public class PrecioRebajadoNoParametersRule extends BusinessRule<ProductCatalog>
      * Regla que fija el precio a 99 para precios mayores que 100.
      */
     @Override
-    public StreamRule<ProductCatalog> defineRule() {
+    public StreamRule<ItemCollection> defineRule() {
         return s -> s.peek(p -> {
             if (p.getPrecio() > ((Integer) this.getParameters().get("precio")).intValue()) {
-                p.setPrecio(PrecioRebajadoNoParametersRule.PRICE_99);
+                p.setPrecio(DiscountedPriceNoParametersRule.PRICE_99);
             }
         });
     }
@@ -38,12 +38,12 @@ public class PrecioRebajadoNoParametersRule extends BusinessRule<ProductCatalog>
     }
 
     @Override
-    public Function<ProductCatalog, ProductCatalog> defineTransformation() {
+    public Function<ItemCollection, ItemCollection> defineTransformation() {
         return null;
     }
 
     @Override
-    protected ProductCatalog internalProcess(final ProductCatalog context) {
+    protected ItemCollection internalProcess(final ItemCollection context) {
         return null;
     }
 }

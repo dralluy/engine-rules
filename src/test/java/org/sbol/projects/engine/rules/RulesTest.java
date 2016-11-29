@@ -28,10 +28,10 @@ public class RulesTest {
      */
     @Test
     public void createRulesTest() {
-        PrecioRebajadoRule rule = new PrecioRebajadoRule();
-        CriterionRuleFactory<ProductCatalog> criterion = new CriterionRuleFactory<>();
-        criterion.fromCriterion(rule.getRule(), ProductCatalog.class);
-        StreamRule<ProductCatalog> streamRule = criterion.build(ProductCatalog.class);
+        DiscountedPriceRule rule = new DiscountedPriceRule();
+        CriterionRuleFactory<ItemCollection> criterion = new CriterionRuleFactory<>();
+        criterion.fromCriterion(rule.getRule(), ItemCollection.class);
+        StreamRule<ItemCollection> streamRule = criterion.build(ItemCollection.class);
         assertNotNull(streamRule);
     }
 
@@ -40,7 +40,7 @@ public class RulesTest {
      */
     @Test
     public void checkRuleParametersTest() {
-        PrecioRebajadoRule rule = new PrecioRebajadoRule();
+        DiscountedPriceRule rule = new DiscountedPriceRule();
         Map<String, Object> params = rule.getParameters();
         assertEquals(new Integer(RulesTest.PRICE_100), params.get("precio"));
     }
@@ -50,7 +50,7 @@ public class RulesTest {
      */
     @Test
     public void updateRuleParametersTest() {
-        PrecioRebajadoRule rule = new PrecioRebajadoRule();
+        DiscountedPriceRule rule = new DiscountedPriceRule();
         Map<String, Object> params = rule.getParameters();
         assertEquals(new Integer(RulesTest.PRICE_100), params.get("precio"));
         params.put("precio", new Integer(RulesTest.PRICE_200));
@@ -64,7 +64,7 @@ public class RulesTest {
      */
     @Test
     public void updateNullParametersTest() {
-        PrecioRebajadoNoParametersRule rule = new PrecioRebajadoNoParametersRule();
+        DiscountedPriceNoParametersRule rule = new DiscountedPriceNoParametersRule();
         rule.updateParameters(null);
         Map<String, Object> params = rule.getParameters();
         assertNull(params);
@@ -75,9 +75,9 @@ public class RulesTest {
      */
     @Test
     public void createRulesPredicateTest() {
-        CriterionRuleFactory<ProductCatalog> criterion = new CriterionRuleFactory<>();
-        criterion.fromPredicate(p -> p.getPrecio() > 0, ProductCatalog.class);
-        StreamRule<ProductCatalog> streamRule = criterion.build(ProductCatalog.class);
+        CriterionRuleFactory<ItemCollection> criterion = new CriterionRuleFactory<>();
+        criterion.fromPredicate(p -> p.getPrecio() > 0, ItemCollection.class);
+        StreamRule<ItemCollection> streamRule = criterion.build(ItemCollection.class);
         assertNotNull(streamRule);
     }
 
@@ -86,9 +86,9 @@ public class RulesTest {
      */
     @Test
     public void createRulesComparatorTest() {
-        CriterionRuleFactory<ProductCatalog> criterion = new CriterionRuleFactory<>();
-        criterion.fromComparator((p1, p2) -> p1.getPrecio() - p2.getPrecio(), ProductCatalog.class);
-        StreamRule<ProductCatalog> streamRule = criterion.build(ProductCatalog.class);
+        CriterionRuleFactory<ItemCollection> criterion = new CriterionRuleFactory<>();
+        criterion.fromComparator((p1, p2) -> p1.getPrecio() - p2.getPrecio(), ItemCollection.class);
+        StreamRule<ItemCollection> streamRule = criterion.build(ItemCollection.class);
         assertNotNull(streamRule);
     }
 
@@ -97,8 +97,8 @@ public class RulesTest {
      */
     @Test
     public void clearRulesTest() {
-        CriterionRuleFactory<ProductCatalog> criterion = new CriterionRuleFactory<>();
-        criterion.fromComparator((p1, p2) -> p1.getPrecio() - p2.getPrecio(), ProductCatalog.class);
+        CriterionRuleFactory<ItemCollection> criterion = new CriterionRuleFactory<>();
+        criterion.fromComparator((p1, p2) -> p1.getPrecio() - p2.getPrecio(), ItemCollection.class);
         criterion.clearRules();
         assertTrue(criterion.getReglas().isEmpty());
     }

@@ -80,12 +80,15 @@ public class S3ClassLoader extends ClassLoader {
         try {
             int contentLength = (int) this.s3.getObjectMetadata(this.bucketName, key).getContentLength();
             byte[] bytes = new byte[contentLength];
-            this.getResourceAsStream(key).read(bytes);
-            return bytes;
-        } catch (Throwable t) {
+            int bytesCount = this.getResourceAsStream(key).read(bytes);
+            if (bytesCount > 0) {
+                return bytes;
+            }
+        } catch (Exception t) {
             throw new ClassNotFoundException(
                     "Unable to find class resource for key \"" + key + "\" in S3 Bucket \"" + this.bucketName + "\"",
                     t);
         }
+        return new byte[0];
     }
 }

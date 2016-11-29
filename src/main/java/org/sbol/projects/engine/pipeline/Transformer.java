@@ -10,6 +10,7 @@ import java.util.function.Function;
  * @param <I>
  * @param <O>
  */
+@FunctionalInterface
 public interface Transformer<I, O> {
 
     /**

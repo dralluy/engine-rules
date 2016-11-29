@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.sbol.projects.engine.constants.Channel;
+import org.sbol.projects.engine.exceptions.EngineRuleException;
 
 /**
  * Definición de un motor de ejecución de reglas sobre una lista de productos.
@@ -21,8 +22,9 @@ public interface RuleManager<P> {
      * @param items Items list to process
      * @param channel Channel
      * @return Items list updated
+     * @throws InterruptedException Error reloading rules
      */
-    List<P> executeRules(final List<P> items, final Channel channel);
+    List<P> executeRules(final List<P> items, final Channel channel) throws InterruptedException;
 
     /**
      * Load rules from persistence system.
@@ -40,8 +42,9 @@ public interface RuleManager<P> {
      * Add rule dynamically to exection.
      * @param ruleCollection Rule collection
      * @param ruleName Rule name
+     * @throws EngineRuleException Error adding rules
      */
-    void addRule(final String ruleCollection, final String ruleName);
+    void addRule(final String ruleCollection, final String ruleName) throws EngineRuleException;
 
     /**
      * Rule activation.

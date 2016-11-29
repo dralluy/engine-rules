@@ -10,18 +10,16 @@ import java.util.stream.Stream;
 import org.sbol.projects.engine.constants.Channel;
 
 /**
- * Builder para la construcción de reglas de negocio basadas en lambdas. Se ofrece la posibilidad de construir los
- * siguientes tipos:
- * - Filtros. Mediante el uso de Predicate. Útil para condiciones lógicas a aplicar a la lista.
- * - Comparadores. Medieante Comparator podemos ordenar el resultado.
- * - Rule. Cualquier función que procesa un Stream y devuelve otro. Para lógica de uso general.
+ * Builder for lambda based business rules. We can build the following types:
+ * - Filters: Using Predicate. Very useful for logical conditions applied to lists.
+ * - Comparators: Using Comparator we can order the result.
+ * - Rule. Any function processing a stream and returning another. For general business logic,
  *
- * El resultado final se obtiene de la reducción de todas las reglas, aplicándose unas sobre otras, según el orden en
- * que se han añadido a la lista general.
+ * The final result is got from an all rules reduction composition.
  *
  * @author david.ralluy
  * @param <T>
- *            Tipo al que aplicar las reglas.
+ *            Item type for rules application.
  *
  */
 public final class CriterionRuleFactory<T> {
@@ -29,7 +27,7 @@ public final class CriterionRuleFactory<T> {
     private Map<Class<?>, RulesMap<T>> reglas = new HashMap<>();
 
     /**
-     * Constructor por defecto.
+     * Default constructor.
      */
     public CriterionRuleFactory() {
         //
@@ -45,12 +43,12 @@ public final class CriterionRuleFactory<T> {
     }
 
     /**
-     * Aplicar un filtro sobre la lista.
+     * Apply a filter to a list.
      *
      * @param predicate
-     *            Predicado.
+     *            Predicate.
      * @param clazz
-     *            Clase.
+     *            Class.
      * @return this
      */
     public CriterionRuleFactory<T> fromPredicate(final Predicate<T> predicate, final Class<?> clazz) {
@@ -58,14 +56,14 @@ public final class CriterionRuleFactory<T> {
     }
 
     /**
-     * Aplicar un filtro sobre la lista para un canal concreto.
+     * Apply a filter to a list in a specific channel.
      *
      * @param predicate
-     *            Predicado.
+     *            Predicate.
      * @param channel
-     *            Canal.
+     *            Channel.
      * @param clazz
-     *            Clase.
+     *            Class.
      * @return this
      */
     public CriterionRuleFactory<T> fromPredicate(final Predicate<T> predicate, final Channel channel,
@@ -76,12 +74,12 @@ public final class CriterionRuleFactory<T> {
     }
 
     /**
-     * Aplicar una ordenacion sobre la lista.
+     * Apply an order to a list.
      *
      * @param comparator
-     *            Comparador.
+     *            Comparator.
      * @param clazz
-     *            Clase.
+     *            Class.
      * @return this
      */
     public CriterionRuleFactory<T> fromComparator(final Comparator<T> comparator, final Class<?> clazz) {
@@ -89,12 +87,12 @@ public final class CriterionRuleFactory<T> {
     }
 
     /**
-     * Aplicar una ordenacion sobre la lista para un canal concreto.
+     * Apply an order to a list in a specific channel.
      *
      * @param comparator
-     *            Comparador.
+     *            Comparator.
      * @param channel
-     *            Canal.
+     *            Channel.
      * @param clazz
      *            Clase.
      * @return this
@@ -107,12 +105,12 @@ public final class CriterionRuleFactory<T> {
     }
 
     /**
-     * Aplicar una regla general de negocio sobre la lista.
+     * Apply a general business rule to a stream.
      *
      * @param rule
-     *            Regla.
+     *            Rule.
      * @param clazz
-     *            Clase.
+     *            Class.
      * @return this
      */
     public CriterionRuleFactory<T> fromCriterion(final StreamRule<T> rule, final Class<?> clazz) {
@@ -120,14 +118,14 @@ public final class CriterionRuleFactory<T> {
     }
 
     /**
-     * Aplicar una regla general de negocio sobre la lista para un canal concreto.
+     * Apply a general business rule to a stream in a specific channel.
      *
      * @param rule
-     *            Regla.
+     *            Rule.
      * @param channel
-     *            Canal.
+     *            Channel.
      * @param clazz
-     *            Clase.
+     *            Class.
      * @return this
      */
     public CriterionRuleFactory<T> fromCriterion(final StreamRule<T> rule, final Channel channel,
@@ -138,11 +136,11 @@ public final class CriterionRuleFactory<T> {
     }
 
     /**
-     * Builder de la regla de negocio.
+     * Business rule builder.
      *
      * @param clazz
-     *            Clase.
-     * @return Regla
+     *            Class.
+     * @return Stream of rules
      */
     public StreamRule<T> build(final Class<?> clazz) {
         return this.build(Channel.ALL, clazz);
@@ -182,16 +180,16 @@ public final class CriterionRuleFactory<T> {
     }
 
     /**
-     * Limpiar las reglas de negocio.
+     * Clearing business rules.
      */
     public void clearRules() {
         this.reglas.clear();
     }
 
     /**
-     * Recuperar reglas.
+     * Get rules.
      *
-     * @return Map de reglas.
+     * @return Rules Map.
      */
     public Map<Class<?>, RulesMap<T>> getReglas() {
         return this.reglas;
