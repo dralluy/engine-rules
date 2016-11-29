@@ -5,7 +5,7 @@ import java.util.Map;
 import org.sbol.projects.engine.constants.Channel;
 
 /**
- * Execution context.
+ * Execution context for the engine rules.
  *
  * @author david.ralluy
  *

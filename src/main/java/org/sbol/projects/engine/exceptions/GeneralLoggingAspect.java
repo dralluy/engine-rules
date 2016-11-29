@@ -13,7 +13,7 @@ import org.springframework.core.env.Environment;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Logging general aspect. A pointcut must be defined for every case.
+ * Logging general aspect. A pointcut must be defined for every option.
  *
  * @author david.ralluy
  *

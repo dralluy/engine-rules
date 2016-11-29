@@ -3,23 +3,23 @@ package org.sbol.projects.engine.rules;
 import java.util.stream.Stream;
 
 /**
- * Definición de una regla de negocio con Java Streams. Define una única operación mediante la cual se aplica cierta
- * lógica de negocio a un Stream de productos y se devuelve otro Stream de productos modificados por la regla.
- * Este interface funcional equivale al uso de UnaryOperator.
+ * Business rule definition with Java Streams.
+ * It's a single operation that applies business logic to an items list stream, and returns another stream with
+ * the modified items.
  *
  * @author david.ralluy
  * @param <T>
- *            Tipo del Stream
+ *            Rule type
  *
  */
 @FunctionalInterface
 public interface StreamRule<T> {
 
     /**
-     * Lógica de negocio aplicada sobre un Stream. Se devuelve el Stream modificado.
+     * Apply business logic to stream. We get the updated stream.
      *
-     * @param stream Stream sobre el que aplicar las reglas.
-     * @return stream
+     * @param stream Input stream
+     * @return stream ouput stream
      */
     Stream<T> apply(final Stream<T> stream);
 

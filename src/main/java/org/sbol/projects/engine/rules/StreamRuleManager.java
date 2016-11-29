@@ -19,7 +19,7 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 
 /**
- * Ejecutor de reglas de negocio basadas en Java Lambdas y su aplicación sobre la lista de productos resultantes.
+ * Generic business rules engine with Java Lambdas and streams.
  *
  * @param <P> Item type
  * @author david.ralluy
@@ -27,12 +27,18 @@ import com.amazonaws.regions.Regions;
  */
 public abstract class StreamRuleManager<P> implements RuleManager<P> {
 
-    private static final String TEST_BUCKET_NAME = "mng-config/test/shop";
+    /**
+     * Bucket name for loading new business rules.
+     */
+    private static final String TEST_BUCKET_NAME = "bucket/name";
 
+    // All the rules map.
     private Map<Class<?>, Map<String, BusinessRule<P>>> rulesMap = new HashMap<>();
 
+    // Rules grouped by channel.
     private Map<Class<?>, EnumMap<Channel, StreamRule<P>>> rulesCompositeMap = new HashMap<>();
 
+    // Rules applied in runtime.
     private Map<Class<?>, EnumMap<Channel, List<BusinessRule<P>>>> rulesAppliedMap = new HashMap<>();
 
     @Autowired
@@ -54,7 +60,7 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
     }
 
     /**
-     * Get rule composite.
+     * Get rules composite.
      *
      * @return Rules map for a channel
      */
@@ -83,7 +89,7 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
     }
 
     @Override
-    public List<P> executeRules(final List<P> productos, final Channel channel) throws InterruptedException {
+    public List<P> executeRules(final List<P> items, final Channel channel) throws InterruptedException {
 
         if (!this.rulesCompositeMap.containsKey(this.getTargetClass())) {
             this.loadRules(null);
@@ -98,9 +104,10 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
         }
 
         if (this.getRulesComposite().get(channel) != null) {
-            return this.getRulesComposite().get(channel).apply(productos.stream()).collect(Collectors.toList());
+            // Business logic execution.
+            return this.getRulesComposite().get(channel).apply(items.stream()).collect(Collectors.toList());
         }
-        return productos;
+        return items;
     }
 
     /**
@@ -113,10 +120,9 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
     protected abstract Class<P> getTargetClass();
 
     /**
-     * Recupera las BusinessRules del contexto de Spring que apliquen a a la
-     * clase que se recibe como parámetro.
+     * Get from spring context the business rules.
      *
-     * @return
+     * @return Rules map
      */
     @SuppressWarnings("unchecked")
     private Map<String, BusinessRule<P>> getRulesFromSpringContext() {
@@ -135,12 +141,10 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
     }
 
     /**
-     * Cargar automáticamente todas las reglas del tipo BusinessRule.
-     * Posteriomente se filtran las que estén activas y ordenadas por prioridad.
+     * Load all the business rules. They get ordered and filtered before executing.
      *
-     * El resultado final es la composición de todas las reglas de negocio por canal dentro de una única regla por
-     * canal, la cual
-     * se aplicará al conjunto resultado.
+     * The final result is a composition of all rules by channel, inside a single rule by channel (see
+     * CriterionRuleFactory)
      *
      */
     @Override
@@ -158,7 +162,7 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
             this.rulesAppliedMap.put(this.getTargetClass(), new EnumMap<Channel, List<BusinessRule<P>>>(Channel.class));
         }
 
-        // Agrupamos las reglas por canal
+        // Grouping rules by channel
         Map<Channel, List<BusinessRule<P>>> reglasCanales = this
             .getRules()
             .values()
@@ -167,7 +171,7 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
 
         for (Entry<Channel, List<BusinessRule<P>>> reglasCanal : reglasCanales.entrySet()) {
 
-            // Ordenamos por prioridad y seleccionamos las activas.
+            // Order by priority and filter the disabled ones.
             List<BusinessRule<P>> reglas = reglasCanal
                 .getValue()
                 .stream()
@@ -176,9 +180,7 @@ public abstract class StreamRuleManager<P> implements RuleManager<P> {
                 .collect(Collectors.toList());
 
             for (BusinessRule<P> businessRule : reglas) {
-                // Este metodo agrupa (dentro de CriterioRuleFactory) todas las StreamRule encapsuladas en cada
-                // BusinessRule por canal.
-                // Esta agrupacion por canal se exploatra después en el método build
+                // This method joins every rule inside a single rule by channel, performing a stream reduction.
                 this.criterionRuleFactory.fromCriterion(businessRule.getRule(), reglasCanal.getKey(),
                         this.getTargetClass());
             }

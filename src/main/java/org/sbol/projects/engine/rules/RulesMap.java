@@ -6,7 +6,7 @@ import java.util.List;
 import org.sbol.projects.engine.constants.Channel;
 
 /**
- * Estructura que almacena las reglas de negocio por canal.
+ * Map for storing the business rules per channel.
  *
  * @author david.ralluy
  *

@@ -2,6 +2,7 @@ package org.sbol.projects.engine.pipeline;
 
 /**
  * Default processor implementation.
+ * There is a preprocess stage, an internal processing, and a postprocess stage.
  *
  * @author david.ralluy
  *

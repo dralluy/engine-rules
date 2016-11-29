@@ -119,7 +119,7 @@ public class ExceptionsTest {
 
     private void updateLoggerLevel() {
         LoggerContext ctx = (LoggerContext) LoggerFactory.getILoggerFactory();
-        Logger logger = ctx.getLogger("com.mango.fwk.exceptions");
+        Logger logger = ctx.getLogger("org.sbol.projects.engine.exceptions");
         logger.setLevel(Level.DEBUG);
     }
 }

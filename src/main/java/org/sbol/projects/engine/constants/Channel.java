@@ -19,7 +19,7 @@ public enum Channel {
     WEB,
 
     /**
-     * Mobile apps.
+     * Mobile apps channel.
      */
     MOBILE
 

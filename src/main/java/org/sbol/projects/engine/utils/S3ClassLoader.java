@@ -12,12 +12,10 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.services.s3.AmazonS3Client;
 
 /**
- * Cargador de clases de S3. Se debe subir el fichero .class con la siguiente nomenclatura:
- * Nombre package + clase
+ * Class loader from AWS S3. The .class file must be uploaded using the name: package + class name
  *
- * Ejemplo: org.mango.services.sercat.FijarPrecioRule (sin el .class)
+ * Example: org.sbol.projects.engine.rules.FixedPriceRule (without .class)
  *
- * Como resultado tenemos el objeto Class que representa a la clase.
  *
  * @author david.ralluy
  *

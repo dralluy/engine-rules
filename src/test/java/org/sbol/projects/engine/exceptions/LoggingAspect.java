@@ -4,7 +4,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
 /**
- * Logging general para todas las llamadas a las capas de api, dominio y servicio.
+ * General logging aspect.
  *
  * @author david.ralluy
  *
@@ -17,7 +17,7 @@ public class LoggingAspect extends GeneralLoggingAspect {
      * especificados.
      */
     @Override
-    @Pointcut("within(com.mango.fwk..*)")
+    @Pointcut("within(org.sbol.projects.engine..*)")
     public void loggingPointcut() {
         // Solo necesario para definir el pointcut
     }

@@ -5,7 +5,7 @@
 
     <groupId>com.sbol.projects</groupId>
     <artifactId>engine-rules</artifactId>
-    <version>1.0.0</version>
+    <version>0.9.1-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -16,12 +16,21 @@
     <name>Engine Rules Framework</name>
     <packaging>jar</packaging>
 
+    <description>A generic engine rules that defines the business logic as lambda functions.
+    This functions can be composed as streams of rules.
+    Any items list can be processed through the engine, applying all the active rules and
+    getting a modified resulting items list.
+    </description>
+    <organization>
+        <name>David Ralluy</name>
+    </organization>
+    <scm>
+        <url>https://github.com/dralluy/engine-rules.git</url>
+    </scm>
+    
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <metrics-spring.version>3.1.0</metrics-spring.version>
-        <dbunit.version>2.5.0</dbunit.version>
-        <spring-test-dbunit.version>1.2.1</spring-test-dbunit.version>
     </properties>
 
     <dependencies>

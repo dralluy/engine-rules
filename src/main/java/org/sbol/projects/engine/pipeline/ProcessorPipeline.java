@@ -3,9 +3,9 @@ package org.sbol.projects.engine.pipeline;
 import java.util.List;
 
 /**
- * Pipeline de procesadores. Un pipeline por definición lanza secuencialmente una serie de procesos, en los cuales se
- * aplica una función a la entrada, y el resultado se asigna a la salida. Posteriormente, la salida de un proceso se
- * convierte en la entrada del siguiente.
+ * Processor pipeline. A pipeline by definition runs a processing sequence. Every process gets applied an input
+ * function,
+ * and the resulting process goes to the output. This sequence gets repeated through the pipeline.
  *
  * @author dralluy
  *
@@ -27,9 +27,9 @@ public class ProcessorPipeline<I, O> implements Processor<I, O> {
     }
 
     /**
-     * Método de ayuda para solucionar el error de compilación de wildcard capture.
+     * Workaround for compilation wildcard capture.
      *
-     * Ver: http://docs.oracle.com/javase/tutorial/java/generics/capture.html
+     * See: http://docs.oracle.com/javase/tutorial/java/generics/capture.html
      *
      * @param processor
      * @param input

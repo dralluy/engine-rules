@@ -7,12 +7,11 @@ import org.sbol.projects.engine.constants.Channel;
 import org.sbol.projects.engine.exceptions.EngineRuleException;
 
 /**
- * Definición de un motor de ejecución de reglas sobre una lista de productos.
- * Habrá diversas implementaciones: Streams, Motor de búsquedas y BBDD.
+ * Definition of a rules engine. It applies through an items list.
  *
- * @param <P> Object type
+ * @param <P> item type
  *
- * @author dralluy
+ * @author david.ralluy
  *
  */
 public interface RuleManager<P> {
